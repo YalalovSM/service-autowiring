@@ -1,5 +1,7 @@
 spring:
   application:
     name: service-autowiring
-service:
-  class: kafkaEventService
+sydev:
+  event:
+    service:
+      name: kafkaEventService

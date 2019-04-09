@@ -1,39 +1,38 @@
 package ru.sydev.serviceautowiring;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 @Slf4j
 @Service
 public class UserService {
-    @Qualifier("activeMQEventService")
+    @Value("${sydev.event.service.name}")
+    private String eventServiceName;
+
     @Autowired
-    private IEventService activeMQEventService;
+    private BeanFactory beans;
 
-    @Qualifier("kafkaEventService")
-    @Autowired
-    private IEventService kafkaEventService;
+    private IEventService service;
 
-    @Value("${service.class}")
-    private String className;
-
-    public IEventService getEventService() {
-        IEventService service = null;
-        switch (className) {
-            case "activeMQEventService":
-                service = activeMQEventService;
-                break;
-            case "kafkaEventService":
-                service = kafkaEventService;
+    @PostConstruct
+    void postConstruct() {
+        try
+        {
+            service = (IEventService) beans.getBean( eventServiceName );
         }
-
-        return service;
+        catch( BeansException e )
+        {
+            service = beans.getBean( DefaultEventService.class );
+        }
     }
 
     public void check() {
-        getEventService().send("Hello there!");
+        service.send("Hello there!");
     }
 }
