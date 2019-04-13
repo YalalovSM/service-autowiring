@@ -8,7 +8,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class ServiceAutowiringApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext app = SpringApplication.run(ServiceAutowiringApplication.class, args);
-        UserService service = (UserService) app.getBean("userService");
-        service.check();
+        EventUsageService eventUsageService = (EventUsageService) app.getBean("eventUsageService");
+        MessageUsageService messageUsageService = (MessageUsageService) app.getBean("messageUsageService");
+
+        eventUsageService.check();
+        messageUsageService.check();
     }
 }

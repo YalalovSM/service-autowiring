@@ -3,5 +3,6 @@ spring:
     name: service-autowiring
 sydev:
   event:
-    service:
-      name: kafkaEventService
+    service: kafkaEventService
+  message:
+    service: ru.sydev.serviceautowiring.message.MailService

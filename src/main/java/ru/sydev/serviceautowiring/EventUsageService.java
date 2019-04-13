@@ -6,33 +6,35 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.sydev.serviceautowiring.event.DefaultEventService;
+import ru.sydev.serviceautowiring.event.EventService;
 
 import javax.annotation.PostConstruct;
 
 @Slf4j
 @Service
-public class UserService {
-    @Value("${sydev.event.service.name}")
-    private String eventServiceName;
+public class EventUsageService {
+    @Value("${sydev.event.service}")
+    private String serviceName;
 
     @Autowired
     private BeanFactory beans;
 
-    private IEventService service;
+    private EventService eventService;
 
     @PostConstruct
     void postConstruct() {
         try
         {
-            service = (IEventService) beans.getBean( eventServiceName );
+            eventService = (EventService) beans.getBean(serviceName);
         }
         catch( BeansException e )
         {
-            service = beans.getBean( DefaultEventService.class );
+            eventService = beans.getBean( DefaultEventService.class );
         }
     }
 
     public void check() {
-        service.send("Hello there!");
+        eventService.send("User created");
     }
 }
